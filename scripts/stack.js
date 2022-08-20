@@ -36,13 +36,46 @@ function validBrackets(str) {
 
 console.log(validBrackets('([0])'));
 
-// TODO: 处理每日温度问题
+
+/**
+ * 栈问题进阶-每日温度问题
+ * 题目描述: 根据每日气温列表，请重新生成一个列表，对应位置的输出是需要再等待多久温度才会升高超过该日的天数。如果之后都不会升高，请在该位置用 0 来代替。
+ * 例如，给定一个列表 temperatures = [73, 74, 75, 71, 69, 72, 76, 73]，你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]。
+ * 提示：气温 列表长度的范围是 [1, 30000]。每个气温的值的均为华氏度，都是在 [30, 100] 范围内的整数。
+ * 思路
+ * 通过维护一个递减栈，记录已经遍历过元素的下标与值，将当前元素与递减栈的元素进行对比，如果当前元素大于栈的元素值，
+ * 则将两者下标之差存入结果数组。同时将处理过的元素出栈。
+ * @param {array} tempArray 
+ * @returns {array}
+ */
 function diffTemperature(tempArray) {
+  const stack = [];
+  const result = new Array(tempArray.length).fill(0);
 
   for (let i = 0; i < tempArray.length; i ++ ) {
 
+    if ( i > 0 ) {
+
+      let j = stack.length - 1;
+      
+      while(j >= 0 && stack[j].element < tempArray[i]) {
+        result[stack[j].index] = i - stack[j].index;
+        stack.pop();
+        j --;
+      }
+    }
+
+    stack.push({
+      index: i,
+      element: tempArray[i]
+    });
   }
+  
+  console.log(result);
+  return result;
 }
+
+diffTemperature([73, 74, 75, 71, 69, 72, 76, 73]);
 
 /**
  * 栈的设计——“最小栈”问题
