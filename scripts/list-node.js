@@ -10,6 +10,25 @@ function ListNode(val) {
 const node = new ListNode(1);
 node.next = new ListNode(2);
 
+/**
+ * 创建链表
+ * @param {ListNode} m 
+ * @param {Listnode} n 
+ * @returns 
+ */
+function initList(m, n) {
+  var head = new ListNode(m);
+  var linkNode = head;
+  
+  for (let i = m + 1; i <= n; i++) {
+    var cur = new ListNode(i);
+    linkNode.next = cur;
+    linkNode = linkNode.next;
+  }
+
+  return head;
+}
+
 
 /**
  * 链表的合并
@@ -99,3 +118,131 @@ function deleteDuplicates2(head) {
 
   return dummy.next;
 }
+
+/**
+ * 快慢指针——删除链表的倒数第 N 个结点
+ * 真题描述：给定一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+ * 示例： 给定一个链表: 1->2->3->4->5, 和 n = 2.
+ * 当删除了倒数第二个结点后，链表变为 1->2->3->5.
+ * 说明： 给定的 n 保证是有效的。
+ * 解法：使用快慢指针，将倒数n位转变为两指针的差值
+ * @param {ListNode} head 
+ * @param {number} n 
+ * @returns {ListNode}
+ */
+function deleteNode(head, n) {
+  var dummy = new ListNode();
+  dummy.next = head;
+  var fast = dummy;
+  var slow = dummy;
+
+  // 快指针先走n步
+  while(n !== 0) {
+    fast = fast.next;
+    n--;
+  }
+
+  // 快慢指针同时走
+  while(!!fast && !fast.next) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+
+  // 执行删除操作
+  slow.next = slow.next.next;
+
+  return dummy.next;
+}
+
+/**
+ * 多指针法——链表的反转
+ * 完全反转一个链表
+ * 真题描述：定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点。
+ * 示例:
+ * 输入: 1->2->3->4->5->NULL
+ * 输出: 5->4->3->2->1->NULL
+ * @param {ListNode} head 
+ * @returns {ListNode}
+ */
+function revertList(head) {
+  var pre = null;
+  var cur = head;
+
+  while(!!cur) {
+    // 记录后继指针
+    var next = cur.next;
+    // 反转指针
+    cur.next = pre;
+
+    // 前进
+    pre = cur;
+    cur = next;
+  }
+
+  return cur;
+}
+
+/**
+ * 局部反转一个链表
+ * 真题描述：反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
+ * 说明: 1 ≤ m ≤ n ≤ 链表长度。
+ * 示例:
+ * 输入: 1->2->3->4->5->NULL, m = 2, n = 4
+ * 输出: 1->4->3->2->5->NULL
+ * 解题思路 确定边界 -> 处理边界内节点反转 -> 处理边界节点指向 
+ * @param {ListNode} head 
+ * @param {number} m 
+ * @param {number} n 
+ * @returns 
+ */
+function partRevertList(head, m, n) {
+  var dummy = new ListNode();
+  dummy.next = head;
+  var fast = dummy;
+  var slow = dummy;
+  var diff = m - (n - 1);
+
+  while(diff > 0) {
+    fast = fast.next;
+    diff--;
+  }
+
+  while(n - 1 > 0) {
+    fast = fast.next;
+    slow = slow.next;
+    n--
+  }
+
+  var leftEnd = slow.next;
+  var rightEnd = fast.next;
+  var pre = leftEnd;
+  var cur = pre.next;
+
+  while(cur !== rightEnd) {
+    var next = cur.next;
+
+    cur.next = pre;
+    pre = cur;
+    cur = next;
+  }
+
+  // 处理首尾情况
+  leftEnd.next = rightEnd;
+  slow.next = fast;
+
+  console.log(leftEnd, rightEnd,  slow, fast);
+  return dummy.next;
+}
+
+/**
+ * 测试函数-局部反转链表
+ */
+function testPartRevertList() {
+  const list = initList(1,6);
+  const result = partRevertList(list, 4,2);
+  console.log(result);
+}
+
+testPartRevertList();
+
+
