@@ -48,3 +48,94 @@ queue1.prototype.peek = function () {
 queue1.prototype.empty = function () {
     return !this.stack1.length && !this.stack2.length; 
 }
+
+/**
+ * 滑动窗口问题
+ * 题目描述：给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+ * 示例: 输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3 输出: [3,3,5,5,6,7]
+ * 解释: 滑动窗口的位置
+ * ---------------
+ * [1 3 -1] -3 5 3 6 7
+ * 1 [3 -1 -3] 5 3 6 7
+ * 1 3 [-1 -3 5] 3 6 7
+ * 1 3 -1 [-3 5 3] 6 7
+ * 1 3 -1 -3 [5 3 6] 7
+ * 1 3 -1 -3 5 [3 6 7]
+
+ * 最大值分别对应：
+ * 3 3 5 5 6 7
+
+ * 提示：你可以假设 k 总是有效的，在输入数组不为空的情况下，1 ≤ k ≤ 输入数组的大小。
+ */
+/**
+ * 双指针+遍历法 时间复杂度O(kn)
+ * @param {number[]} nums 
+ * @param {number} k 
+ * @returns 
+ */
+function maxSlidingWindow1(nums, k) {
+  var left = 0;
+  var right = left + k -1;
+  var res = [];
+
+  while(right <= nums.length - 1) {
+    var max = findMax(nums, left, right);
+    res.push(max);
+    
+    left ++;
+    right ++;
+  }
+
+  return res;
+}
+
+function findMax(nums, left, right) {
+  if (!nums || !nums.length) {
+    return;
+  }
+  var max = nums[left];
+  for (var i = left + 1; i <= right; i ++) {
+    if (nums[i] > max) {
+      max = nums[i];
+    }
+  }
+  return max;
+}
+
+/**
+ * 双端队列解法
+ * @param {number[]} nums 
+ * @param {number} k 
+ * @returns 
+ */
+function maxSlidingWindow2(nums, k) {
+  // 递减的双端队列
+  var deque = [];
+  var res = [];
+  
+  for (let i = 0; i < nums.length; i ++) {
+    
+    // 将小于将要入栈元素的队尾元素，依次从队尾出队
+    while(deque.length >= 1 && deque[deque.length - 1] < nums[i]) {
+      deque.pop();
+    }
+
+    // 将当前元素推入队列
+    deque.push(nums[i]);
+
+    // 将队头元素推入结果数组
+    if (i >= k - 1) {
+      res.push(deque[0]);
+
+      // 如果左边界的值为最大值，则意味着还留在双端队列里，此时需要将其出队，因为下一次遍历就不在滑动窗口范围内了
+      if (nums[i - k + 1] === deque[0]) {
+        deque.shift();
+      }
+    }
+  }
+
+  return res;
+}
+
+console.log(maxSlidingWindow2([3,5,4,3,4,1,2,3,6],3));
+
