@@ -122,3 +122,44 @@ function subsets(nums) {
   return res;
 }
 
+/**
+ * 使用二叉搜索树查找数据域为某一个特定值的节点
+ * 根据二叉搜索树的特性，节点值小于指定值时，往右找
+ * 节点值大于指定值时，往左找
+ * @param {object} root 
+ * @param {number} n 
+ * @returns 
+ */
+function search(root, n) {
+  if (!root) {
+    return;
+  }
+  if (root.val === n) {
+    console.log('目标节点是', root);
+  } else if (root.val > n) {
+    search(root.left, n);
+  } else {
+    search(root.right, n);
+  }
+}
+
+/**
+ * 使用二叉搜索树插入新节点
+ * @param {object} root 
+ * @param {number} n 
+ * @returns 
+ */
+function insertIntoBST(root, n) {
+  if (!root) {
+    root = new TreeNode(n);
+    return root;
+  }
+
+  if (root.val > n) {
+    root.left = insertIntoBST(root.left, n);
+  } else {
+    root.right = insertIntoBST(root.right, n);
+  }
+
+  return root;
+}

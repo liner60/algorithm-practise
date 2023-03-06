@@ -56,7 +56,7 @@ function selectSort(arr) {
   return arr;
 }
 
-console.log(selectSort([5,6,3,1, 4,5]));
+console.log(selectSort([5,6,3,1,4,5]));
 /**
  * 插入排序
  * 插入排序的核心思想是“找到元素在它前面那个序列中的正确位置”。
